@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run setup        # Install deps + generate Prisma client + run migrations (first-time setup)
 npm run dev          # Dev server at http://localhost:3000 (Turbopack)
+npm run dev:daemon   # Dev server in background, logs to logs.txt
 npm run build        # Production build
 npm run lint         # ESLint
 npm run test         # Vitest test suite
@@ -14,6 +15,8 @@ npm run db:reset     # Reset Prisma database
 ```
 
 Run a single test file: `npx vitest run src/lib/__tests__/file-system.test.ts`
+
+**Note:** All npm scripts include `NODE_OPTIONS='--require ./node-compat.cjs'` to fix Node.js 25+ Web Storage SSR compatibility by removing non-functional localStorage/sessionStorage globals during SSR.
 
 ## Environment
 
@@ -39,8 +42,10 @@ UIGen is a Next.js 15 App Router app where users describe React components in na
 
 **Path alias:** `@/*` → `src/*`
 
-**Database:** SQLite via Prisma. Schema has `User` and `Project` (messages + FS data stored as JSON strings).
+**Database:** SQLite via Prisma. Schema has `User` and `Project` (messages + FS data stored as JSON strings). Prisma client is generated to `src/generated/prisma` (not the default `node_modules/.prisma/client`), so imports use `@/generated/prisma` instead of `@prisma/client`.
 
 **Testing:** Vitest with jsdom. Tests live in `__tests__` folders alongside source files.
 
 **UI components:** Shadcn (New York style) in `src/components/ui/`, configured via `components.json`.
+
+**Styling:** Tailwind CSS v4 (note: v4 has breaking changes from v3, including new configuration format and PostCSS plugin usage).
